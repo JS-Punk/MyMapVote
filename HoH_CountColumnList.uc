@@ -33,33 +33,40 @@ function float MyItemHeight(Canvas c)
 }
 function DrawItem(Canvas Canvas, int i, float X, float Y, float W, float H, bool bSelected, bool bPending)
 {
-	local float CellLeft, CellWidth;
-	local GUIStyles DrawStyle;
+    local float CellLeft, CellWidth;
+    local GUIStyles DrawStyle;
+    local string MapName;
 
-	if( VRI == none )		return;
-	// Draw the selection border
-	if( bSelected )
-	{
-		SelectedStyle.Draw(Canvas,MenuState, X, Y-1, W, H+2 );
-		DrawStyle = SelectedStyle;
-	}
-	else DrawStyle = Style;
+    if(VRI == none) return;
+    
+    // Draw the selection border
+    if(bSelected)
+    {
+        SelectedStyle.Draw(Canvas,MenuState, X, Y-1, W, H+2 );
+        DrawStyle = SelectedStyle;
+    }
+    else DrawStyle = Style;
 
-	GetCellLeftWidth( 0, CellLeft, CellWidth );
-	DrawStyle.DrawText( Canvas, MenuState, CellLeft, Y, CellWidth, H, TXTA_Left,
-		VRI.GameConfig[VRI.MapVoteCount[SortData[i].SortItem].GameConfigIndex].GameName, MyFontScale );
+    GetCellLeftWidth(0, CellLeft, CellWidth);
+    DrawStyle.DrawText(Canvas, MenuState, CellLeft, Y, CellWidth, H, TXTA_Left,
+        VRI.GameConfig[VRI.MapVoteCount[SortData[i].SortItem].GameConfigIndex].GameName, MyFontScale);
 
-	GetCellLeftWidth( 1, CellLeft, CellWidth );
-	DrawStyle.DrawText( Canvas, MenuState, CellLeft, Y, CellWidth, H, TXTA_Left,
-		VRI.MapList[VRI.MapVoteCount[SortData[i].SortItem].MapIndex].MapName, MyFontScale );
+    GetCellLeftWidth(1, CellLeft, CellWidth);
+    // Aquí es donde agregamos la lógica para mostrar "Random Map" cuando corresponda
+    if(VRI.MapVoteCount[SortData[i].SortItem].MapIndex == -999)
+        MapName = "Random Map"; // Para votación aleatoria
+    else
+        MapName = VRI.MapList[VRI.MapVoteCount[SortData[i].SortItem].MapIndex].MapName;
+        
+    DrawStyle.DrawText(Canvas, MenuState, CellLeft, Y, CellWidth, H, TXTA_Left, MapName, MyFontScale);
 
-	GetCellLeftWidth( 2, CellLeft, CellWidth );
-	DrawStyle.DrawText( Canvas, MenuState, CellLeft, Y, CellWidth, H, TXTA_Left,
-		string(VRI.MapVoteCount[SortData[i].SortItem].VoteCount), MyFontScale );
+    GetCellLeftWidth(2, CellLeft, CellWidth);
+    DrawStyle.DrawText(Canvas, MenuState, CellLeft, Y, CellWidth, H, TXTA_Left,
+        string(VRI.MapVoteCount[SortData[i].SortItem].VoteCount), MyFontScale);
 
-	GetCellLeftWidth( 3, CellLeft, CellWidth );
-	DrawStyle.DrawText( Canvas, MenuState, CellLeft, Y, CellWidth, H, TXTA_Left,
-		HoH_VotingReplicationInfo(VRI).RepArray[VRI.MapVoteCount[SortData[i].SortItem].MapIndex], MyFontScale );
+    GetCellLeftWidth(3, CellLeft, CellWidth);
+    DrawStyle.DrawText(Canvas, MenuState, CellLeft, Y, CellWidth, H, TXTA_Left,
+        HoH_VotingReplicationInfo(VRI).RepArray[VRI.MapVoteCount[SortData[i].SortItem].MapIndex], MyFontScale);
 }
 //------------------------------------------------------------------------------------------------
 function string GetSortString( int i )
